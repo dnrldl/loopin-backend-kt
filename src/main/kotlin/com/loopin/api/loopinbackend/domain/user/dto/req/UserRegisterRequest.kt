@@ -1,7 +1,7 @@
 package com.loopin.api.loopinbackend.domain.user.dto.req
 
-import com.loopin.api.loopinbackend.global.validation.ValidationMessage
-import com.loopin.api.loopinbackend.global.validation.ValidationPattern
+import com.loopin.api.loopinbackend.common.validation.ValidationMessage
+import com.loopin.api.loopinbackend.common.validation.ValidationPattern
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Past
 import jakarta.validation.constraints.Pattern

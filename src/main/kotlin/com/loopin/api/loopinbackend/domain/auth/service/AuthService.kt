@@ -3,8 +3,8 @@ package com.loopin.api.loopinbackend.domain.auth.service
 import com.loopin.api.loopinbackend.domain.auth.dto.req.UserLoginRequest
 import com.loopin.api.loopinbackend.domain.auth.dto.res.AuthToken
 import com.loopin.api.loopinbackend.domain.user.type.Role
-import com.loopin.api.loopinbackend.global.security.CustomUserDetails
-import com.loopin.api.loopinbackend.global.security.jwt.JwtProvider
+import com.loopin.api.loopinbackend.common.security.CustomUserDetails
+import com.loopin.api.loopinbackend.common.security.jwt.JwtProvider
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.stereotype.Service

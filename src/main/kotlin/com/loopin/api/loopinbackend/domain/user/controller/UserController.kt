@@ -6,8 +6,8 @@ import com.loopin.api.loopinbackend.domain.user.dto.res.UserCheckResponse
 import com.loopin.api.loopinbackend.domain.user.dto.res.UserInfoResponse
 import com.loopin.api.loopinbackend.domain.user.mapper.toInfoResponse
 import com.loopin.api.loopinbackend.domain.user.service.UserService
-import com.loopin.api.loopinbackend.global.annotation.AuthUserId
-import com.loopin.api.loopinbackend.global.response.CommonResponse
+import com.loopin.api.loopinbackend.common.annotation.AuthUserId
+import com.loopin.api.loopinbackend.common.response.CommonResponse
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity

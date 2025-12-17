@@ -3,9 +3,8 @@ package com.loopin.api.loopinbackend.domain.auth.controller
 import com.loopin.api.loopinbackend.domain.auth.dto.req.UserLoginRequest
 import com.loopin.api.loopinbackend.domain.auth.dto.res.UserLoginResponse
 import com.loopin.api.loopinbackend.domain.auth.service.AuthService
-import com.loopin.api.loopinbackend.domain.user.dto.req.UserRegisterRequest
-import com.loopin.api.loopinbackend.global.annotation.AuthUserId
-import com.loopin.api.loopinbackend.global.response.CommonResponse
+import com.loopin.api.loopinbackend.common.annotation.AuthUserId
+import com.loopin.api.loopinbackend.common.response.CommonResponse
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity

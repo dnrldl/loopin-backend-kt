@@ -6,8 +6,8 @@ import com.loopin.api.loopinbackend.domain.user.entity.User
 import com.loopin.api.loopinbackend.domain.user.repository.UserRepository
 import com.loopin.api.loopinbackend.domain.user.type.Role
 import com.loopin.api.loopinbackend.domain.user.type.UserStatus
-import com.loopin.api.loopinbackend.global.error.code.ErrorCode
-import com.loopin.api.loopinbackend.global.error.exception.BizException
+import com.loopin.api.loopinbackend.common.error.code.ErrorCode
+import com.loopin.api.loopinbackend.common.error.exception.BaseException
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -19,7 +19,7 @@ class UserService(
 ) {
 
     fun getUserById(userId: Long): User =
-        userRepository.findUserById(userId) ?: throw BizException(ErrorCode.USER_NOT_FOUND)
+        userRepository.findUserById(userId) ?: throw BaseException(ErrorCode.USER_NOT_FOUND)
 
     @Transactional
     fun register(request: UserRegisterRequest): Long {
@@ -47,19 +47,19 @@ class UserService(
 
     @Transactional
     fun updatePassword(userId: Long, body: UserUpdatePasswordRequest) {
-        val user = userRepository.findUserById(userId) ?: throw BizException(ErrorCode.USER_NOT_FOUND)
+        val user = userRepository.findUserById(userId) ?: throw BaseException(ErrorCode.USER_NOT_FOUND)
 
         if (!user.matchesPassword(body.oldPassword, passwordEncoder::matches))
-            throw BizException(ErrorCode.INVALID_OLD_PASSWORD)
+            throw BaseException(ErrorCode.INVALID_OLD_PASSWORD)
         if (user.matchesPassword(body.newPassword, passwordEncoder::matches))
-            throw BizException(ErrorCode.SAME_PASSWORD)
+            throw BaseException(ErrorCode.SAME_PASSWORD)
 
         user.setPassword(passwordEncoder.encode(body.newPassword)!!)
     }
 
     @Transactional
     fun withdraw(userId: Long) {
-        val user = userRepository.findUserById(userId) ?: throw BizException(ErrorCode.USER_NOT_FOUND)
+        val user = userRepository.findUserById(userId) ?: throw BaseException(ErrorCode.USER_NOT_FOUND)
         userRepository.delete(user)
     }
 
@@ -77,6 +77,6 @@ class UserService(
         if (checkNickname(request.nickname)) fields.add(mapOf("nickname" to request.nickname))
         if (checkPhoneNumber(request.phoneNumber)) fields.add(mapOf("phoneNumber" to request.phoneNumber))
 
-        if (!fields.isEmpty()) throw BizException(ErrorCode.DUPLICATED_EMAIL)
+        if (!fields.isEmpty()) throw BaseException(ErrorCode.DUPLICATED_EMAIL)
     }
 }

@@ -1,6 +1,6 @@
 package com.loopin.api.loopinbackend
 
-import com.loopin.api.loopinbackend.global.security.jwt.JwtProperties
+import com.loopin.api.loopinbackend.common.security.jwt.JwtProperties
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.runApplication

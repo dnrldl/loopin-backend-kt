@@ -2,7 +2,7 @@ package com.loopin.api.loopinbackend.domain.user.entity
 
 import com.loopin.api.loopinbackend.domain.user.type.Role
 import com.loopin.api.loopinbackend.domain.user.type.UserStatus
-import com.loopin.api.loopinbackend.global.entity.BaseEntity
+import com.loopin.api.loopinbackend.common.entity.BaseEntity
 import jakarta.persistence.*
 import java.time.LocalDate
 import java.time.LocalDateTime
