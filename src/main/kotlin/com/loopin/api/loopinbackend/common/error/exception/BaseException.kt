@@ -1,6 +1,6 @@
 package com.loopin.api.loopinbackend.common.error.exception
 
-import com.loopin.api.loopinbackend.common.error.code.ErrorCode
+import com.loopin.api.loopinbackend.common.response.code.ErrorCode
 
 open class BaseException(
     val errorCode: ErrorCode,

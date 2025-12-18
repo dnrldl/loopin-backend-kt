@@ -6,8 +6,9 @@ import com.loopin.api.loopinbackend.domain.user.entity.User
 import com.loopin.api.loopinbackend.domain.user.repository.UserRepository
 import com.loopin.api.loopinbackend.domain.user.type.Role
 import com.loopin.api.loopinbackend.domain.user.type.UserStatus
-import com.loopin.api.loopinbackend.common.error.code.ErrorCode
+import com.loopin.api.loopinbackend.common.response.code.ErrorCode
 import com.loopin.api.loopinbackend.common.error.exception.BaseException
+import com.loopin.api.loopinbackend.common.error.exception.BusinessException
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -68,15 +69,12 @@ class UserService(
     fun checkPhoneNumber(phoneNumber: String): Boolean = userRepository.existsByPhoneNumber(phoneNumber)
 
     private fun validateRegister(request: UserRegisterRequest) {
-        val fields = mutableListOf<Map<String, String>>()
-//        if (checkEmail(request.email)) throw BizException(ErrorCode.DUPLICATED_EMAIL)
-//        if (checkNickname(request.nickname)) throw BizException(ErrorCode.DUPLICATED_NICKNAME)
-//        if (checkPhoneNumber(request.nickname)) throw BizException(ErrorCode.DUPLICATED_NICKNAME)
+        val fields = mutableListOf<Map<String, List<String>>>()
 
-        if (checkEmail(request.email)) fields.add(mapOf("email" to request.email))
-        if (checkNickname(request.nickname)) fields.add(mapOf("nickname" to request.nickname))
-        if (checkPhoneNumber(request.phoneNumber)) fields.add(mapOf("phoneNumber" to request.phoneNumber))
+        if (checkEmail(request.email)) fields.add(mapOf("email" to listOf(request.email)))
+        if (checkNickname(request.nickname)) fields.add(mapOf("nickname" to listOf(request.nickname)))
+        if (checkPhoneNumber(request.phoneNumber)) fields.add(mapOf("phoneNumber" to listOf(request.phoneNumber)))
 
-        if (!fields.isEmpty()) throw BaseException(ErrorCode.DUPLICATED_EMAIL)
+        if (!fields.isEmpty()) throw BusinessException(ErrorCode.INVALID_INPUT_VALUE)
     }
 }

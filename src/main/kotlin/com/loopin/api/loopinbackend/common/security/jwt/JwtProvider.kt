@@ -1,11 +1,9 @@
 package com.loopin.api.loopinbackend.common.security.jwt
 
+import com.loopin.api.loopinbackend.common.response.code.ErrorCode
 import com.loopin.api.loopinbackend.domain.auth.type.TokenStatus
 import com.loopin.api.loopinbackend.domain.user.type.Role
-import io.jsonwebtoken.ExpiredJwtException
-import io.jsonwebtoken.Jwts
-import io.jsonwebtoken.MalformedJwtException
-import io.jsonwebtoken.UnsupportedJwtException
+import io.jsonwebtoken.*
 import io.jsonwebtoken.io.Decoders
 import io.jsonwebtoken.security.Keys
 import org.springframework.stereotype.Component
@@ -50,6 +48,39 @@ class JwtProvider(
             .signWith(getSignKey())
             .compact()
     }
+
+    private fun parseClaims(token: String): Claims {
+        try {
+            return Jwts.parserBuilder()
+                .setSigningKey(getSignKey())
+                .build()
+                .parseClaimsJws(token)
+                .body
+        } catch (e: ExpiredJwtException) {
+            return e.claims
+        } catch (e: JwtException) {
+            throw IllegalArgumentException(ErrorCode.INVALID_JWT.message, e)
+        }
+    }
+
+    fun extractUserId(token: String): Long =
+        parseClaims(token)["userId"] as? Long
+            ?: throw IllegalStateException("토큰에 User Id가 포함되어있지 않습니다.")
+
+    fun extractUsername(token: String): String =
+        parseClaims(token).subject
+            ?: throw IllegalStateException("토큰에 Subject가 포함되어있지 않습니다.")
+
+    fun extractExpiredTime(token: String): Long =
+        parseClaims(token).expiration?.time
+            ?: throw IllegalStateException("토큰에 expiration이 포함되어있지 않습니다.")
+
+    fun extractRole(token: String): Role =
+        parseClaims(token)["role"]
+            ?.toString()
+            ?.let { Role.valueOf(it) }
+            ?: throw IllegalStateException("JWT does not contain role")
+
 
     fun isValidToken(token: String): Boolean = getTokenStatus(token) == TokenStatus.VALID
 

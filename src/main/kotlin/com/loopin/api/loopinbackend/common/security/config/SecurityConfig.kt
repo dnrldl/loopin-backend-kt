@@ -1,4 +1,4 @@
-package com.loopin.api.loopinbackend.common.config
+package com.loopin.api.loopinbackend.common.security.config
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

@@ -1,7 +1,7 @@
 package com.loopin.api.loopinbackend.common.security.filter
 
-import com.loopin.api.loopinbackend.common.error.code.ErrorCode
-import com.loopin.api.loopinbackend.common.response.CommonResponse
+import com.loopin.api.loopinbackend.common.response.ErrorResponse
+import com.loopin.api.loopinbackend.common.response.code.ErrorCode
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.http.MediaType
@@ -20,7 +20,7 @@ class CustomAuthenticationEntryPoint(
         authException: AuthenticationException
     ) {
         val errorCode = ErrorCode.UNAUTHORIZED
-        val errorResponse = CommonResponse.fail(errorCode)
+        val errorResponse = ErrorResponse.fail(errorCode)
 
         response.status = errorCode.status.value()
         response.contentType = MediaType.APPLICATION_JSON_VALUE

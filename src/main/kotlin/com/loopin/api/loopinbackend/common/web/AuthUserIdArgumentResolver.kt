@@ -2,7 +2,7 @@ package com.loopin.api.loopinbackend.common.web
 
 import com.loopin.api.loopinbackend.common.annotation.AuthRequirement
 import com.loopin.api.loopinbackend.common.annotation.AuthUserId
-import com.loopin.api.loopinbackend.common.error.code.ErrorCode
+import com.loopin.api.loopinbackend.common.response.code.ErrorCode
 import com.loopin.api.loopinbackend.common.error.exception.BaseException
 import com.loopin.api.loopinbackend.common.security.CustomUserDetails
 import com.loopin.api.loopinbackend.common.security.util.getCurrentAuth

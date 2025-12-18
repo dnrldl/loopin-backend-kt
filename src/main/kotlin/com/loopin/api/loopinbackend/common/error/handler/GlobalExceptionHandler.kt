@@ -1,12 +1,13 @@
 package com.loopin.api.loopinbackend.common.error.handler
 
-import com.loopin.api.loopinbackend.common.error.code.ErrorCode
+import com.loopin.api.loopinbackend.common.response.code.ErrorCode
 import com.loopin.api.loopinbackend.common.error.exception.BaseException
-import com.loopin.api.loopinbackend.common.response.CommonResponse
+import com.loopin.api.loopinbackend.common.response.BaseResponse
+import com.loopin.api.loopinbackend.common.response.ErrorResponse
 import jakarta.servlet.http.HttpServletRequest
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
-import org.springframework.security.core.AuthenticationException
+import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 
@@ -14,22 +15,40 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
 class GlobalExceptionHandler {
     private val log = LoggerFactory.getLogger(this.javaClass)
 
-    @ExceptionHandler(BaseException::class, AuthenticationException::class)
-    private fun handleBizException(e: BaseException, request: HttpServletRequest): ResponseEntity<CommonResponse<Void>> {
+    @ExceptionHandler(MethodArgumentNotValidException::class)
+    fun handleRequestBodyValidation(
+        e: MethodArgumentNotValidException,
+        request: HttpServletRequest
+    ): ResponseEntity<ErrorResponse> {
+        val errorCode = ErrorCode.INVALID_INPUT_VALUE
+        printErrorLog(errorCode, request, e)
+
+        val error = e.bindingResult.fieldErrors
+            .groupBy { it.field }
+            .mapValues { (_, errors) ->
+                errors.mapNotNull { it.defaultMessage }
+            }
+
+        return ResponseEntity.status(errorCode.status)
+            .body(ErrorResponse.fail(errorCode, error))
+    }
+
+    @ExceptionHandler(BaseException::class)
+    private fun handleBizException(e: BaseException, request: HttpServletRequest): ResponseEntity<ErrorResponse> {
         val errorCode = e.errorCode
         printErrorLog(errorCode, request, e)
 
         return ResponseEntity.status(errorCode.status)
-            .body(CommonResponse.fail(errorCode))
+            .body(ErrorResponse.fail(errorCode))
     }
 
     @ExceptionHandler(Exception::class)
-    private fun handleException(e: Exception, request: HttpServletRequest): ResponseEntity<CommonResponse<Void>> {
+    private fun handleException(e: Exception, request: HttpServletRequest): ResponseEntity<ErrorResponse> {
         val errorCode = ErrorCode.INTERNAL_SERVER_ERROR
         printErrorLog(errorCode, request, e)
 
         return ResponseEntity.status(errorCode.status)
-            .body(CommonResponse.fail(errorCode))
+            .body(ErrorResponse.fail(errorCode))
     }
 
     private fun printErrorLog(errorCode: ErrorCode, request: HttpServletRequest, e: Exception?) {

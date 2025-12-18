@@ -5,12 +5,14 @@ import com.loopin.api.loopinbackend.domain.auth.dto.res.AuthToken
 import com.loopin.api.loopinbackend.domain.user.type.Role
 import com.loopin.api.loopinbackend.common.security.CustomUserDetails
 import com.loopin.api.loopinbackend.common.security.jwt.JwtProvider
+import com.loopin.api.loopinbackend.domain.auth.entity.RefreshToken
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.stereotype.Service
 
 @Service
 class AuthService(
+    private val refreshTokenService: RefreshTokenService,
     private val authenticationManager: AuthenticationManager,
     private val jwtProvider: JwtProvider
 ) {
@@ -26,6 +28,9 @@ class AuthService(
 
         val accessToken = jwtProvider.generateAccessToken(user.id!!, user.email, Role.USER)
         val refreshToken = jwtProvider.generateRefreshToken(user.id!!, user.email, Role.USER)
+
+        // 리프레시 토큰 저장(DB, Redis)
+        refreshTokenService.registerRefreshToken(refreshToken)
 
         return AuthToken(accessToken, refreshToken)
     }
