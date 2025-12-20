@@ -1,7 +1,11 @@
 package com.loopin.api.loopinbackend.common.response
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder
 import com.loopin.api.loopinbackend.common.response.code.ErrorCode
 
+@JsonPropertyOrder(
+    value = ["success", "code", "message", "error", "responseAt"]
+)
 class ErrorResponse(
     code: String,
     message: String,

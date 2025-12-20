@@ -9,7 +9,6 @@ import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.stereotype.Service
 import java.time.Duration
 import java.time.Instant
-import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.util.concurrent.TimeUnit
 
@@ -38,7 +37,7 @@ class RefreshTokenService(
 
         val refreshToken = RefreshToken(
             userId = userId,
-            value = token,
+            tokenValue = token,
             expiresAt = expiresAt
         )
 

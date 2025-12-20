@@ -50,14 +50,14 @@ class JwtProvider(
     }
 
     private fun parseClaims(token: String): Claims {
-        try {
-            return Jwts.parserBuilder()
+        return try {
+            Jwts.parserBuilder()
                 .setSigningKey(getSignKey())
                 .build()
                 .parseClaimsJws(token)
                 .body
         } catch (e: ExpiredJwtException) {
-            return e.claims
+            e.claims
         } catch (e: JwtException) {
             throw IllegalArgumentException(ErrorCode.INVALID_JWT.message, e)
         }

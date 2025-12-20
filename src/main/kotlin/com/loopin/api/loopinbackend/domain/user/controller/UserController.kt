@@ -32,17 +32,17 @@ class UserController(
     @Operation(summary = "이메일 유효성 조회")
     @GetMapping("/check/email")
     fun checkEmail(@RequestParam email: String): SuccessResponse<UserCheckResponse> =
-        SuccessResponse.of(UserCheckResponse(userService.checkEmail(email)), SuccessCode.RETRIEVE_SUCCESS)
+        SuccessResponse.of(UserCheckResponse(userService.existsEmail(email)), SuccessCode.RETRIEVE_SUCCESS)
 
     @Operation(summary = "닉네임 유효성 조회")
     @GetMapping("/check/nickname")
     fun checkNickname(@RequestParam nickname: String): SuccessResponse<UserCheckResponse> =
-        SuccessResponse.of(UserCheckResponse(userService.checkNickname(nickname)), SuccessCode.RETRIEVE_SUCCESS)
+        SuccessResponse.of(UserCheckResponse(userService.existsNickname(nickname)), SuccessCode.RETRIEVE_SUCCESS)
 
     @Operation(summary = "전화번호 유효성 조회")
     @GetMapping("/check/phone-number")
     fun checkPhoneNumber(@RequestParam phoneNumber: String): SuccessResponse<UserCheckResponse> =
-        SuccessResponse.of(UserCheckResponse(userService.checkPhoneNumber(phoneNumber)), SuccessCode.RETRIEVE_SUCCESS)
+        SuccessResponse.of(UserCheckResponse(userService.existsPhoneNumber(phoneNumber)), SuccessCode.RETRIEVE_SUCCESS)
 
     @Operation(summary = "비밀번호 변경")
     @PatchMapping("/password")

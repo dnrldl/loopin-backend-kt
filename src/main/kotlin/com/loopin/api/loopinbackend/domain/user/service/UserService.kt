@@ -64,17 +64,17 @@ class UserService(
         userRepository.delete(user)
     }
 
-    fun checkEmail(email: String): Boolean = userRepository.existsByEmail(email)
-    fun checkNickname(nickname: String): Boolean = userRepository.existsByNickname(nickname)
-    fun checkPhoneNumber(phoneNumber: String): Boolean = userRepository.existsByPhoneNumber(phoneNumber)
+    fun existsEmail(email: String): Boolean = userRepository.existsByEmail(email)
+    fun existsNickname(nickname: String): Boolean = userRepository.existsByNickname(nickname)
+    fun existsPhoneNumber(phoneNumber: String): Boolean = userRepository.existsByPhoneNumber(phoneNumber)
 
     private fun validateRegister(request: UserRegisterRequest) {
-        val fields = mutableListOf<Map<String, List<String>>>()
+        val fields = mutableListOf<String>()
 
-        if (checkEmail(request.email)) fields.add(mapOf("email" to listOf(request.email)))
-        if (checkNickname(request.nickname)) fields.add(mapOf("nickname" to listOf(request.nickname)))
-        if (checkPhoneNumber(request.phoneNumber)) fields.add(mapOf("phoneNumber" to listOf(request.phoneNumber)))
+        if (existsEmail(request.email)) fields.add("email")
+        if (existsNickname(request.nickname)) fields.add("nickname")
+        if (existsPhoneNumber(request.phoneNumber)) fields.add("phoneNumber")
 
-        if (!fields.isEmpty()) throw BusinessException(ErrorCode.INVALID_INPUT_VALUE)
+        if (!fields.isEmpty()) throw BusinessException(ErrorCode.USED_USER_INFORMATION, fields = fields)
     }
 }

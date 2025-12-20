@@ -4,6 +4,7 @@ import com.loopin.api.loopinbackend.common.entity.BaseEntity
 import jakarta.persistence.*
 import java.time.LocalDateTime
 
+@Table(name = "refresh_token")
 @Entity
 class RefreshToken(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -13,7 +14,7 @@ class RefreshToken(
     val userId: Long,
 
     @Column(nullable = false)
-    val value: String,
+    val tokenValue: String,
 
     @Column(nullable = false)
     val expiresAt: LocalDateTime,

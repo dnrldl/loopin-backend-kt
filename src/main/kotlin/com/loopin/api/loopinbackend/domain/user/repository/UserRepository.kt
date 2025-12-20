@@ -2,7 +2,6 @@ package com.loopin.api.loopinbackend.domain.user.repository
 
 import com.loopin.api.loopinbackend.domain.user.entity.User
 import org.springframework.data.jpa.repository.JpaRepository
-import java.util.Optional
 
 interface UserRepository : JpaRepository<User, Long> {
     fun findUserById(id: Long): User?

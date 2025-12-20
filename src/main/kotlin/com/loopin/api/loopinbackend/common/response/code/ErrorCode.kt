@@ -22,6 +22,7 @@ enum class ErrorCode(
     SAME_PASSWORD("F-U006", "기존 비밀번호가 일치하지 않습니다.", HttpStatus.BAD_REQUEST),
     PASSWORD_SAME_AS_OLD("F-U007", "새 비밀번호는 기존 비밀번호와 같을 수 없습니다.", HttpStatus.BAD_REQUEST),
     DUPLICATED_PHONE_NUMBER("F-U008", "이미 사용 중인 전화번호입니다.", HttpStatus.CONFLICT),
+    USED_USER_INFORMATION("F-U008", "이미 사용 중인 사용자 정보입니다.", HttpStatus.CONFLICT),
 
     // post
     POST_NOT_FOUND("F-P001", "게시글을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),

@@ -26,6 +26,6 @@ class CustomAuthenticationEntryPoint(
         response.contentType = MediaType.APPLICATION_JSON_VALUE
         response.characterEncoding = "UTF-8"
 
-        response.getWriter().write(objectMapper.writeValueAsString(errorResponse))
+        response.writer.write(objectMapper.writeValueAsString(errorResponse))
     }
 }
