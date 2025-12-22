@@ -4,7 +4,7 @@ import com.loopin.api.loopinbackend.common.response.code.ErrorCode
 
 open class BaseException(
     val errorCode: ErrorCode,
-    val fields: List<String>? = null,
+    val fields: Any? = null,
     cause: Throwable? = null,
 ) : RuntimeException(errorCode.message, cause) {
 

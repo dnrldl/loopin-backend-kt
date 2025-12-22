@@ -17,22 +17,45 @@ class GlobalExceptionHandler {
     // 사용자 요청 예외 (Validation)
     @ExceptionHandler(MethodArgumentNotValidException::class)
     fun handleRequestBodyValidation(
-        e: MethodArgumentNotValidException, request: HttpServletRequest
+        e: MethodArgumentNotValidException,
+        request: HttpServletRequest
     ): ResponseEntity<ErrorResponse> {
+
         val errorCode = ErrorCode.INVALID_INPUT_VALUE
         printErrorLog(errorCode, request, e)
 
-        throw BaseException(errorCode = errorCode, fields = e.bindingResult.fieldErrors.map { it.field })
+        val fields: Map<String, List<String>> =
+            e.bindingResult.fieldErrors
+                .groupBy { it.field }
+                .mapValues { (_, errors) ->
+                    errors.mapNotNull { it.defaultMessage }
+                }
+
+        return ResponseEntity
+            .status(errorCode.status) // 보통 400
+            .body(
+                ErrorResponse.fail(
+                    code = errorCode,
+                    errors = fields
+                )
+            )
     }
+
 
     // 사용자 노출 예외
     @ExceptionHandler(BaseException::class)
     private fun handleBizException(e: BaseException, request: HttpServletRequest): ResponseEntity<ErrorResponse> {
         val errorCode = e.errorCode
-        print(e)
         printErrorLog(errorCode, request, e)
 
-        return ResponseEntity.status(errorCode.status).body(ErrorResponse.fail(errorCode))
+        return ResponseEntity
+            .status(errorCode.status)
+            .body(
+                ErrorResponse.fail(
+                    code = errorCode,
+                    errors = e.fields
+                )
+            )
     }
 
     // 시스템 예외
@@ -45,7 +68,7 @@ class GlobalExceptionHandler {
     }
 
     private fun printErrorLog(errorCode: ErrorCode, request: HttpServletRequest, e: Exception?) {
-        log.error(
+        log.warn(
             "[{}] {}: {} - {} {}",
             errorCode.code,
             errorCode.status,

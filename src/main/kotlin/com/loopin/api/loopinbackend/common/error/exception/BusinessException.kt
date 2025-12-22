@@ -4,6 +4,6 @@ import com.loopin.api.loopinbackend.common.response.code.ErrorCode
 
 class BusinessException(
     errorCode: ErrorCode,
-    fields: List<String>? = null,
+    fields: Any? = null,
     cause: Throwable? = null,
 ) : BaseException(errorCode, fields, cause)

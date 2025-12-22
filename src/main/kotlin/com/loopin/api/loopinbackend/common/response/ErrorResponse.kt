@@ -23,7 +23,7 @@ class ErrorResponse(
                 message = code.message
             )
 
-        fun fail(code: ErrorCode, errors: Any): ErrorResponse =
+        fun fail(code: ErrorCode, errors: Any?): ErrorResponse =
             ErrorResponse(
                 code = code.code,
                 message = code.message,

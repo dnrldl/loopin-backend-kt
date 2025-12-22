@@ -2,6 +2,9 @@ package com.loopin.api.loopinbackend.common.validation
 
 
 object ValidationMessage {
+    // EMAIL
+    const val EMAIL_INVALID: String = "이메일 형식이 올바르지 않습니다."
+
     // NOT_BLANK
     const val EMAIL_NOT_BLANK: String = "이메일은 필수 입력값입니다."
     const val PASSWORD_NOT_BLANK: String = "비밀번호는 필수 입력값입니다."

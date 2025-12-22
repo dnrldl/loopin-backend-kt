@@ -11,6 +11,7 @@ import com.loopin.api.loopinbackend.domain.user.mapper.toInfoResponse
 import com.loopin.api.loopinbackend.domain.user.service.UserService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
+import jakarta.validation.Valid
 import org.springframework.web.bind.annotation.*
 
 @Tag(name = "User", description = "유저 API")
@@ -21,7 +22,7 @@ class UserController(
 ) {
     @Operation(summary = "회원가입")
     @PostMapping("/register")
-    fun register(@RequestBody request: UserRegisterRequest): SuccessResponse<Long> =
+    fun register(@RequestBody @Valid request: UserRegisterRequest): SuccessResponse<Long> =
         SuccessResponse.of(userService.register(request), SuccessCode.SAVE_SUCCESS)
 
     @Operation(summary = "유저 정보 조회")
