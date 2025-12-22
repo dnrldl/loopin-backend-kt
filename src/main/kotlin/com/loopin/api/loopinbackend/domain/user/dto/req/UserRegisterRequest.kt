@@ -40,8 +40,8 @@ data class UserRegisterRequest(
 
     @field:NotBlank(message = "전화번호는 필수 입력값입니다.")
     @field:Pattern(
-        regexp = "^01[016789]\\d{7,8}$",
-        message = "전화번호는 10~11자리 숫자 휴대폰 번호여야 합니다."
+        regexp = ValidationPattern.PHONE_NUMBER_VALID,
+        message = ValidationMessage.PHONE_NUMBER_PATTERN
     )
     val phoneNumber: String,
 
