@@ -1,5 +1,7 @@
 package com.loopin.api.loopinbackend.common.security.config
 
+import com.loopin.api.loopinbackend.common.security.filter.CustomAccessDeniedHandler
+import com.loopin.api.loopinbackend.common.security.filter.CustomAuthenticationEntryPoint
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
@@ -16,7 +18,10 @@ import org.springframework.security.web.DefaultSecurityFilterChain
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true)
-class SecurityConfig {
+class SecurityConfig(
+    private val customAuthenticationEntryPoint: CustomAuthenticationEntryPoint,
+    private val customAccessDeniedHandler: CustomAccessDeniedHandler
+) {
 
     @Bean
     fun filterChain(http: HttpSecurity): DefaultSecurityFilterChain? {
@@ -61,10 +66,10 @@ class SecurityConfig {
 //                UsernamePasswordAuthenticationFilter::class.java
 //            )
 
-//            .exceptionHandling {
-//                it.authenticationEntryPoint(authenticationEntryPoint) // 401
-//                it.accessDeniedHandler(accessDeniedHandler)             // 403
-//            }
+            .exceptionHandling {
+                it.authenticationEntryPoint(customAuthenticationEntryPoint)
+                it.accessDeniedHandler(customAccessDeniedHandler)
+            }
 
         // OAuth2 설정은 여기서 이어서
 

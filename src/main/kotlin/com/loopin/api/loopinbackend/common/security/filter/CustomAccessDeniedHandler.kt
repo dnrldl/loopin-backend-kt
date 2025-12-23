@@ -5,22 +5,22 @@ import com.loopin.api.loopinbackend.common.response.code.ErrorCode
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.http.MediaType
-import org.springframework.security.core.AuthenticationException
-import org.springframework.security.web.AuthenticationEntryPoint
+import org.springframework.security.access.AccessDeniedException
+import org.springframework.security.web.access.AccessDeniedHandler
 import org.springframework.stereotype.Component
 import tools.jackson.databind.ObjectMapper
 
 @Component
-class CustomAuthenticationEntryPoint(
+class CustomAccessDeniedHandler(
     private val objectMapper: ObjectMapper
-): AuthenticationEntryPoint { // 401
+) : AccessDeniedHandler { // 403
 
-    override fun commence(
+    override fun handle(
         request: HttpServletRequest,
         response: HttpServletResponse,
-        authException: AuthenticationException
+        accessDeniedException: AccessDeniedException
     ) {
-        val errorCode = ErrorCode.UNAUTHORIZED
+        val errorCode = ErrorCode.ACCESS_DENIED
         val errorResponse = ErrorResponse.fail(errorCode)
 
         response.status = errorCode.status.value()
