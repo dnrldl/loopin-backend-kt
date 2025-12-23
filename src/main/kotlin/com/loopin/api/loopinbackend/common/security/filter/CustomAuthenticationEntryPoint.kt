@@ -1,5 +1,6 @@
 package com.loopin.api.loopinbackend.common.security.filter
 
+import com.loopin.api.loopinbackend.common.logging.logger
 import com.loopin.api.loopinbackend.common.response.ErrorResponse
 import com.loopin.api.loopinbackend.common.response.code.ErrorCode
 import jakarta.servlet.http.HttpServletRequest
@@ -15,11 +16,15 @@ class CustomAuthenticationEntryPoint(
     private val objectMapper: ObjectMapper
 ): AuthenticationEntryPoint { // 401
 
+    val log = logger()
+
     override fun commence(
         request: HttpServletRequest,
         response: HttpServletResponse,
         authException: AuthenticationException
     ) {
+        log.warn("Authentication failed(401): {}", authException.message)
+
         val errorCode = ErrorCode.UNAUTHORIZED
         val errorResponse = ErrorResponse.fail(errorCode)
 

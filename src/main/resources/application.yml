@@ -1,6 +1,10 @@
 spring:
   application:
     name: loopin-backend
+
+  profiles:
+    active: local
+
   h2:
     console:
       enabled: true
@@ -12,7 +16,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     properties:
       hibernate:
         dialect: org.hibernate.dialect.H2Dialect

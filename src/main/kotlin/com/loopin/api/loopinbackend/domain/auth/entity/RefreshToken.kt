@@ -1,6 +1,6 @@
 package com.loopin.api.loopinbackend.domain.auth.entity
 
-import com.loopin.api.loopinbackend.common.entity.BaseEntity
+import com.loopin.api.loopinbackend.common.entity.TimeBaseEntity
 import jakarta.persistence.*
 import java.time.LocalDateTime
 
@@ -18,4 +18,4 @@ class RefreshToken(
 
     @Column(nullable = false)
     val expiresAt: LocalDateTime,
-) : BaseEntity()
+) : TimeBaseEntity()

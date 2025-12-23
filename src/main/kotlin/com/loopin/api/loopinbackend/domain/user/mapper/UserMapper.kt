@@ -1,10 +1,10 @@
 package com.loopin.api.loopinbackend.domain.user.mapper
 
-import com.loopin.api.loopinbackend.domain.user.dto.res.UserInfoResponse
+import com.loopin.api.loopinbackend.domain.user.dto.view.UserInfoView
 import com.loopin.api.loopinbackend.domain.user.entity.User
 
-fun User.toInfoResponse(): UserInfoResponse =
-    UserInfoResponse(
+fun User.toInfoView(): UserInfoView =
+    UserInfoView(
         id = id ?: 0L,
         email = email
     )

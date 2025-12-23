@@ -1,7 +1,7 @@
 package com.loopin.api.loopinbackend.domain.user.service
 
-import com.loopin.api.loopinbackend.domain.user.dto.req.UserRegisterRequest
-import com.loopin.api.loopinbackend.domain.user.dto.req.UserUpdatePasswordRequest
+import com.loopin.api.loopinbackend.domain.user.dto.command.RegisterUserRequest
+import com.loopin.api.loopinbackend.domain.user.dto.command.UpdateUserPasswordRequest
 import com.loopin.api.loopinbackend.domain.user.entity.User
 import com.loopin.api.loopinbackend.domain.user.repository.UserRepository
 import com.loopin.api.loopinbackend.domain.user.type.Role
@@ -23,7 +23,7 @@ class UserService(
         userRepository.findUserById(userId) ?: throw BaseException(ErrorCode.USER_NOT_FOUND)
 
     @Transactional
-    fun register(request: UserRegisterRequest): Long {
+    fun register(request: RegisterUserRequest): Long {
         validateRegister(request)
 
         val user = User(
@@ -47,7 +47,7 @@ class UserService(
     }
 
     @Transactional
-    fun updatePassword(userId: Long, body: UserUpdatePasswordRequest) {
+    fun updatePassword(userId: Long, body: UpdateUserPasswordRequest) {
         val user = userRepository.findUserById(userId) ?: throw BaseException(ErrorCode.USER_NOT_FOUND)
 
         if (!user.matchesPassword(body.oldPassword, passwordEncoder::matches))
@@ -68,7 +68,7 @@ class UserService(
     fun existsNickname(nickname: String): Boolean = userRepository.existsByNickname(nickname)
     fun existsPhoneNumber(phoneNumber: String): Boolean = userRepository.existsByPhoneNumber(phoneNumber)
 
-    private fun validateRegister(request: UserRegisterRequest) {
+    private fun validateRegister(request: RegisterUserRequest) {
         val fields = mutableListOf<String>()
 
         if (existsEmail(request.email)) fields.add("email")

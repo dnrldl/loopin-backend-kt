@@ -1,4 +1,4 @@
-package com.loopin.api.loopinbackend.domain.user.dto.req
+package com.loopin.api.loopinbackend.domain.user.dto.command
 
 import com.loopin.api.loopinbackend.common.validation.ValidationMessage
 import com.loopin.api.loopinbackend.common.validation.ValidationPattern
@@ -9,7 +9,7 @@ import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Size
 import java.time.LocalDate
 
-data class UserRegisterRequest(
+data class RegisterUserRequest(
 
     @field:NotBlank(message = ValidationMessage.EMAIL_NOT_BLANK)
     @field:Email(message = ValidationMessage.EMAIL_INVALID)

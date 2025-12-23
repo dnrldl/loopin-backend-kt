@@ -34,6 +34,10 @@ class JwtAuthenticationFilter(
     ) {
         val token = resolveToken(request)
         val tokenStatus = jwtProvider.getTokenStatus(token)
+        if (tokenStatus == TokenStatus.EMPTY) {
+            filterChain.doFilter(request, response)
+            return
+        }
         if (tokenStatus != TokenStatus.VALID) throw BusinessException(tokenStatus.toErrorCode())
         if (redisTemplate.hasKey(RedisKeyGenerator.generateRedisKey(
                     RedisPrefix.BLACKLIST,

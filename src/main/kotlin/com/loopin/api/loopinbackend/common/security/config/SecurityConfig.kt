@@ -31,6 +31,9 @@ class SecurityConfig(
             .formLogin { it.disable() }
             .logout { it.disable() }
             .httpBasic { it.disable() }
+            .headers {
+                it.frameOptions { frame -> frame.sameOrigin() }
+            }
 
             .authorizeHttpRequests {
                 it.requestMatchers("/api/auth/**").permitAll()
@@ -53,6 +56,8 @@ class SecurityConfig(
 
                 // 댓글 조회 허용
                 it.requestMatchers(HttpMethod.GET, "/api/posts/*/comments").permitAll()
+
+                it.requestMatchers("/h2-console/**").permitAll()
 
                 it.anyRequest().authenticated()
             }

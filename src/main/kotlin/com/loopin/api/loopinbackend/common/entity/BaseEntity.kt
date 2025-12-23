@@ -1,25 +1,21 @@
 package com.loopin.api.loopinbackend.common.entity
 
-import jakarta.persistence.Access
-import jakarta.persistence.AccessType
 import jakarta.persistence.Column
 import jakarta.persistence.EntityListeners
 import jakarta.persistence.MappedSuperclass
-import org.springframework.data.annotation.CreatedDate
-import org.springframework.data.annotation.LastModifiedDate
+import org.springframework.data.annotation.CreatedBy
+import org.springframework.data.annotation.LastModifiedBy
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
-import java.time.LocalDateTime
 
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener::class)
-@Access(AccessType.FIELD)
 abstract class BaseEntity {
+    @CreatedBy
+    @Column(updatable = false)
+    lateinit var createdBy: String
+        protected set
 
-    @CreatedDate
-    @Column(nullable = false, updatable = false)
-    protected lateinit var createdAt: LocalDateTime
-
-    @LastModifiedDate
-    @Column(nullable = false)
-    protected lateinit var updatedAt: LocalDateTime
+    @LastModifiedBy
+    lateinit var updatedBy: String
+        protected set
 }
