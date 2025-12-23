@@ -27,3 +27,11 @@ jwt:
   key: 7b455ca1eb61dabeefdf833d58563a0a88c45473df53c010f841a36edb30f4a8
   access-token-validity: 86400000   # 1일
   refresh-token-validity: 604800000 # 7일
+
+logging:
+  level:
+    root: INFO
+    com.yourcompany.loopin: DEBUG
+    org.springframework.web: INFO
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql: TRACE
