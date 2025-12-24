@@ -7,6 +7,7 @@ import com.loopin.api.loopinbackend.common.error.exception.BaseException
 import com.loopin.api.loopinbackend.common.security.CustomUserDetails
 import com.loopin.api.loopinbackend.common.security.util.getCurrentAuth
 import org.springframework.core.MethodParameter
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Component
 import org.springframework.web.bind.support.WebDataBinderFactory
 import org.springframework.web.context.request.NativeWebRequest
@@ -27,7 +28,8 @@ class AuthUserIdArgumentResolver : HandlerMethodArgumentResolver {
         binderFactory: WebDataBinderFactory?
     ): Any? {
         val anno = parameter.getParameterAnnotation(AuthUserId::class.java)!!
-        val auth = getCurrentAuth()
+        val auth = SecurityContextHolder.getContext().authentication
+        if (auth == null || !auth.isAuthenticated) throw Exception()
 
         val userId: Long? = when (val principal = auth.principal) {
             is CustomUserDetails -> principal.user.id

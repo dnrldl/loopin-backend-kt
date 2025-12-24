@@ -5,21 +5,23 @@ spring:
   profiles:
     active: local
 
-  h2:
-    console:
-      enabled: true
   datasource:
-    url: jdbc:h2:file:./data/testdb
-    username: sa
-    password:
-    driver-class-name: org.h2.Driver
+    url: jdbc:postgresql://localhost:5432/loopin
+    username: loopin_user
+    password: 1234
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 20
+      idle-timeout: 30000
+      pool-name: HikariPool
 
   jpa:
     hibernate:
       ddl-auto: update
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.H2Dialect
+        dialect: org.hibernate.dialect.PostgreSQLDialect
 
   data:
     redis:

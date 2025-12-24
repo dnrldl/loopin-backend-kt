@@ -64,7 +64,7 @@ class JwtProvider(
     }
 
     fun extractUserId(token: String): Long =
-        parseClaims(token)["userId"] as? Long
+        (parseClaims(token)["userId"] as? Number)?.toLong()
             ?: throw IllegalStateException("토큰에 User Id가 포함되어있지 않습니다.")
 
     fun extractUsername(token: String): String =

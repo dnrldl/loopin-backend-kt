@@ -2,6 +2,7 @@ package com.loopin.api.loopinbackend.common.security.config
 
 import com.loopin.api.loopinbackend.common.security.filter.CustomAccessDeniedHandler
 import com.loopin.api.loopinbackend.common.security.filter.CustomAuthenticationEntryPoint
+import com.loopin.api.loopinbackend.common.security.filter.JwtAuthenticationFilter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
@@ -14,11 +15,13 @@ import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.DefaultSecurityFilterChain
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true)
 class SecurityConfig(
+    private val jwtAuthenticationFilter: JwtAuthenticationFilter,
     private val customAuthenticationEntryPoint: CustomAuthenticationEntryPoint,
     private val customAccessDeniedHandler: CustomAccessDeniedHandler
 ) {
@@ -66,10 +69,10 @@ class SecurityConfig(
                 it.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             }
 
-//            .addFilterBefore(
-//                jwtAuthenticationFilter,
-//                UsernamePasswordAuthenticationFilter::class.java
-//            )
+            .addFilterBefore(
+                jwtAuthenticationFilter,
+                UsernamePasswordAuthenticationFilter::class.java
+            )
 
             .exceptionHandling {
                 it.authenticationEntryPoint(customAuthenticationEntryPoint)

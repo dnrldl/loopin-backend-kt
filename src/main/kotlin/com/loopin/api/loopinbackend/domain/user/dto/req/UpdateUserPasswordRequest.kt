@@ -1,4 +1,4 @@
-package com.loopin.api.loopinbackend.domain.user.dto.command
+package com.loopin.api.loopinbackend.domain.user.dto.req
 
 import com.loopin.api.loopinbackend.common.validation.ValidationMessage
 import com.loopin.api.loopinbackend.common.validation.ValidationPattern

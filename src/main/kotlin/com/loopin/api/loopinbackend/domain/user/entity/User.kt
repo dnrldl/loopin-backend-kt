@@ -32,13 +32,13 @@ class User(
     val lastName: String,
 
     @Column(nullable = false, unique = true, length = 60)
-    val nickname: String,
+    private var nickname: String,
 
     @Column(nullable = false, length = 15)
     val phoneNumber: String,
 
-    @Column(length = 300)
-    val bio: String,
+    @Column(length = 30)
+    private var bio: String,
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -64,6 +64,16 @@ class User(
 
     fun setPassword(encodedPassword: String) {
         this.password = encodedPassword
+    }
+
+    fun getNickname(): String = this.nickname
+
+    fun setNickname(nickname: String) {
+        this.nickname = nickname
+    }
+
+    fun setBio(bio: String) {
+        this.bio = bio
     }
 
     fun getEncodedPassword(): String = this.password

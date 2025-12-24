@@ -41,7 +41,7 @@ class RefreshTokenService(
             expiresAt = expiresAt
         )
 
-        refreshTokenRepository.deleteByUserId(userId)
+//        refreshTokenRepository.deleteByUserId(userId)
         refreshTokenRepository.save(refreshToken)
     }
 }

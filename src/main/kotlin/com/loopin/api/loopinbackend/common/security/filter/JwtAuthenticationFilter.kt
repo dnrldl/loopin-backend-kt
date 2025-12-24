@@ -1,6 +1,8 @@
 package com.loopin.api.loopinbackend.common.security.filter
 
 import com.loopin.api.loopinbackend.common.error.exception.BusinessException
+import com.loopin.api.loopinbackend.common.error.exception.CommonAuthenticationException
+import com.loopin.api.loopinbackend.common.logging.logger
 import com.loopin.api.loopinbackend.common.redis.constant.RedisPrefix
 import com.loopin.api.loopinbackend.common.redis.generator.RedisKeyGenerator
 import com.loopin.api.loopinbackend.common.response.code.ErrorCode
@@ -14,7 +16,9 @@ import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.data.redis.core.RedisTemplate
+import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.AuthenticationException
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
 import org.springframework.stereotype.Component
@@ -27,6 +31,8 @@ class JwtAuthenticationFilter(
     private val customUserDetailsService: CustomUserDetailsService
 ) : OncePerRequestFilter() {
 
+    val log = logger()
+
     override fun doFilterInternal(
         request: HttpServletRequest,
         response: HttpServletResponse,
@@ -34,22 +40,28 @@ class JwtAuthenticationFilter(
     ) {
         val token = resolveToken(request)
         val tokenStatus = jwtProvider.getTokenStatus(token)
-        if (tokenStatus == TokenStatus.EMPTY) {
-            filterChain.doFilter(request, response)
-            return
+
+        log.debug("요청된 토큰 = {}", token)
+        log.debug("요청된 토큰 상태 = {}", tokenStatus)
+
+        if (tokenStatus != TokenStatus.EMPTY) {
+            if (tokenStatus != TokenStatus.VALID) throw BadCredentialsException("유효하지 않은 토큰 = $tokenStatus")
+            if (redisTemplate.hasKey(
+                    RedisKeyGenerator.generateRedisKey(
+                        RedisPrefix.BLACKLIST,
+                        token!!
+                    )
+                )
+            ) throw CommonAuthenticationException("로그아웃된 토큰")
+
+            val email = jwtProvider.extractUsername(token)
+            val userDetails = customUserDetailsService.loadUserByUsername(email) as CustomUserDetails
+
+            val auth = UsernamePasswordAuthenticationToken(userDetails, null, userDetails.authorities)
+            auth.details = WebAuthenticationDetailsSource().buildDetails(request) // 세션, IP 등등
+
+            SecurityContextHolder.getContext().authentication = auth
         }
-        if (tokenStatus != TokenStatus.VALID) throw BusinessException(tokenStatus.toErrorCode())
-        if (redisTemplate.hasKey(RedisKeyGenerator.generateRedisKey(
-                    RedisPrefix.BLACKLIST,
-                    token!!))) throw BusinessException(ErrorCode.BLACKLISTED_TOKEN)
-
-        val email = jwtProvider.extractUsername(token)
-        val userDetails = customUserDetailsService.loadUserByUsername(email) as CustomUserDetails
-
-        val auth = UsernamePasswordAuthenticationToken(userDetails, null, userDetails.authorities)
-        auth.details = WebAuthenticationDetailsSource().buildDetails(request) // 세션, IP 등등
-
-        SecurityContextHolder.getContext().authentication = auth
 
         filterChain.doFilter(request, response)
     }

@@ -21,7 +21,7 @@ fun getCurrentUser(): User {
 }
 
 fun resolveToken(request: HttpServletRequest): String? {
-    val bearerToken = request.getHeader("Authorization") ?: return null;
+    val bearerToken = request.getHeader("Authorization") ?: return null
 
     if (!bearerToken.startsWith("Bearer ")) return null
 

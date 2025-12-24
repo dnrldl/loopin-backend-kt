@@ -1,6 +1,6 @@
 package com.loopin.api.loopinbackend.domain.post.command.service
 
-import com.loopin.api.loopinbackend.domain.post.command.dto.result.CreatePostResult
+import com.loopin.api.loopinbackend.domain.post.command.dto.CreatePostResult
 import com.loopin.api.loopinbackend.domain.post.dto.req.CreatePostRequest
 import com.loopin.api.loopinbackend.domain.post.entity.Post
 import com.loopin.api.loopinbackend.domain.post.repository.PostJpaRepository
