@@ -1,0 +1,69 @@
+package com.loopin.api.loopinbackend.domain.auth.command.service
+
+import com.loopin.api.loopinbackend.common.error.exception.BusinessException
+import com.loopin.api.loopinbackend.common.response.code.ErrorCode
+import com.loopin.api.loopinbackend.common.security.CustomUserDetails
+import com.loopin.api.loopinbackend.common.security.jwt.JwtProvider
+import com.loopin.api.loopinbackend.domain.auth.command.dto.UserLoginCommand
+import com.loopin.api.loopinbackend.domain.auth.command.dto.UserLogoutCommand
+import com.loopin.api.loopinbackend.domain.auth.command.dto.UserRefreshTokenCommand
+import com.loopin.api.loopinbackend.domain.auth.dto.res.AuthToken
+import com.loopin.api.loopinbackend.domain.auth.dto.res.UserRefreshTokenResult
+import com.loopin.api.loopinbackend.domain.auth.infra.redis.RedisAuthTokenRepository
+import com.loopin.api.loopinbackend.domain.user.type.Role
+import org.springframework.security.authentication.AuthenticationManager
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.stereotype.Service
+
+@Service
+class AuthService(
+    private val redisAuthTokenRepository: RedisAuthTokenRepository,
+    private val authenticationManager: AuthenticationManager,
+    private val jwtProvider: JwtProvider
+) {
+
+    fun login(request: UserLoginCommand): AuthToken {
+        val auth = authenticationManager.authenticate(
+            UsernamePasswordAuthenticationToken(
+                request.email,
+                request.password
+            )
+        )
+        val user = (auth.principal as CustomUserDetails).user
+
+        val accessToken = jwtProvider.generateAccessToken(user.id!!, user.email, Role.USER)
+        val refreshToken = jwtProvider.generateRefreshToken(user.id!!, user.email, Role.USER)
+
+        // 리프레시 토큰 저장 (Redis)
+        redisAuthTokenRepository.saveRefreshToken(user.id!!, refreshToken)
+
+        return AuthToken(accessToken, refreshToken)
+    }
+
+    fun logout(command: UserLogoutCommand) {
+        // accessToken 블랙리스트 등록
+        redisAuthTokenRepository.saveBlacklistToken(command.userId, command.accessToken)
+
+        // refreshToken 폐기
+        redisAuthTokenRepository.deleteRefreshToken(command.userId)
+    }
+
+    fun refreshToken(command: UserRefreshTokenCommand): UserRefreshTokenResult {
+        // refreshToken에서 사용자 정보 추출
+        val userId = jwtProvider.extractUserId(command.refreshToken)
+        val email = jwtProvider.extractUsername(command.refreshToken)
+
+        // 레디스에 저장된 refreshToken 추출
+        val savedRefreshToken = redisAuthTokenRepository.findRefreshToken(userId)
+
+        // 요청, 저장된 리프레시가 다르거나 없다면 예외
+        if (savedRefreshToken != command.refreshToken) throw BusinessException(ErrorCode.INVALID_REFRESH_TOKEN)
+
+        val newAccessToken = jwtProvider.generateAccessToken(userId, email, Role.USER)
+        val newRefreshToken = jwtProvider.generateRefreshToken(userId, email, Role.USER)
+
+        redisAuthTokenRepository.deleteRefreshToken(userId)
+        redisAuthTokenRepository.saveRefreshToken(userId, newRefreshToken)
+        return UserRefreshTokenResult(accessToken = newAccessToken, refreshToken = newRefreshToken)
+    }
+}

@@ -5,6 +5,6 @@ import java.time.LocalDateTime
 abstract class BaseResponse(
     val success: Boolean,
     val code: String,
-    val message: String,
+    var message: String,
     val requestAt: LocalDateTime = LocalDateTime.now(),
 )

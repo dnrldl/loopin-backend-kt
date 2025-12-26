@@ -26,7 +26,9 @@ class CustomAuthenticationEntryPoint(
         log.warn("Authentication failed(401): {}", authException.message)
 
         val errorCode = ErrorCode.UNAUTHORIZED
-        val errorResponse = ErrorResponse.fail(errorCode)
+        val errorResponse = ErrorResponse.fail(errorCode).apply {
+            message = authException.message ?: errorCode.message
+        }
 
         response.status = errorCode.status.value()
         response.contentType = MediaType.APPLICATION_JSON_VALUE

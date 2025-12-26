@@ -34,7 +34,7 @@ class User(
     @Column(nullable = false, unique = true, length = 60)
     private var nickname: String,
 
-    @Column(nullable = false, length = 15)
+    @Column(nullable = false, unique = true, length = 15)
     val phoneNumber: String,
 
     @Column(length = 30)

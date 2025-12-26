@@ -5,14 +5,45 @@ import com.loopin.api.loopinbackend.common.response.ErrorResponse
 import com.loopin.api.loopinbackend.common.response.code.ErrorCode
 import jakarta.servlet.http.HttpServletRequest
 import org.slf4j.LoggerFactory
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.web.HttpRequestMethodNotSupportedException
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
+import org.springframework.web.servlet.NoHandlerFoundException
+import org.springframework.web.servlet.resource.NoResourceFoundException
 
 @RestControllerAdvice
 class GlobalExceptionHandler {
     private val log = LoggerFactory.getLogger(this.javaClass)
+
+    // 잘못된 경로로 요청
+    @ExceptionHandler(NoHandlerFoundException::class, NoResourceFoundException::class)
+    fun handleNotFound(e: Exception, request: HttpServletRequest): ResponseEntity<ErrorResponse> {
+        val errorCode = ErrorCode.NOT_FOUND
+        printErrorLog(errorCode, request, e)
+
+        return ResponseEntity
+            .status(errorCode.status)
+            .body(ErrorResponse.fail(code = errorCode))
+    }
+
+
+    // 잘못된 메서드로 요청 예) GET 으로 요청해야하는데 POST 로 요청
+    @ExceptionHandler(HttpRequestMethodNotSupportedException::class)
+    fun handleMethodNotAllowed(
+        e: HttpRequestMethodNotSupportedException,
+        request: HttpServletRequest
+    ): ResponseEntity<ErrorResponse> {
+        val errorCode = ErrorCode.METHOD_NOT_ALLOWED
+
+        printErrorLog(errorCode, request, e)
+
+        return ResponseEntity
+            .status(errorCode.status)
+            .body(ErrorResponse.fail(code = errorCode))
+    }
 
     // 사용자 요청 예외 (Validation)
     @ExceptionHandler(MethodArgumentNotValidException::class)
