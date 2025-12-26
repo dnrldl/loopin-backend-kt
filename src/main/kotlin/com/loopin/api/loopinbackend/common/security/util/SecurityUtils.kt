@@ -12,12 +12,12 @@ fun getCurrentAuth(): Authentication {
     return auth
 }
 
-fun getCurrentUser(): User {
+fun getCurrentUserDetail(): CustomUserDetails {
     val auth = getCurrentAuth()
     val principal = auth.principal
     if (principal !is CustomUserDetails) throw Exception()
 
-    return principal.user
+    return principal
 }
 
 fun resolveToken(request: HttpServletRequest): String? {

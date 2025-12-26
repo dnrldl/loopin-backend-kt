@@ -32,7 +32,7 @@ class AuthUserIdArgumentResolver : HandlerMethodArgumentResolver {
         if (auth == null || !auth.isAuthenticated) throw Exception()
 
         val userId: Long? = when (val principal = auth.principal) {
-            is CustomUserDetails -> principal.user.id
+            is CustomUserDetails -> principal.userId
             else -> null
         }
 

@@ -1,11 +1,10 @@
 package com.loopin.api.loopinbackend.common.audit.config.aware
 
 import com.loopin.api.loopinbackend.common.security.CustomUserDetails
-import com.loopin.api.loopinbackend.common.security.util.getCurrentUser
 import org.springframework.data.domain.AuditorAware
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Component
-import java.util.Optional
+import java.util.*
 
 @Component
 class AuditorAwareImpl : AuditorAware<Long> {
@@ -22,6 +21,6 @@ class AuditorAwareImpl : AuditorAware<Long> {
             return Optional.empty()
         }
 
-        return Optional.of(principal.user.id!!)
+        return Optional.of(principal.userId)
     }
 }

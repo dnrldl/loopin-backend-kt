@@ -22,27 +22,29 @@ class AuthService(
     private val jwtProvider: JwtProvider
 ) {
 
-    fun login(request: UserLoginCommand): AuthToken {
+    fun login(command: UserLoginCommand): AuthToken {
         val auth = authenticationManager.authenticate(
             UsernamePasswordAuthenticationToken(
-                request.email,
-                request.password
+                command.email,
+                command.password
             )
         )
-        val user = (auth.principal as CustomUserDetails).user
+        val userDetails = auth.principal as CustomUserDetails
 
-        val accessToken = jwtProvider.generateAccessToken(user.id!!, user.email, Role.USER)
-        val refreshToken = jwtProvider.generateRefreshToken(user.id!!, user.email, Role.USER)
+        val accessToken = jwtProvider.generateAccessToken(userDetails.userId, userDetails.username, Role.USER)
+        val refreshToken = jwtProvider.generateRefreshToken(userDetails.userId, userDetails.username, Role.USER)
 
         // 리프레시 토큰 저장 (Redis)
-        redisAuthTokenRepository.saveRefreshToken(user.id!!, refreshToken)
+        redisAuthTokenRepository.saveRefreshToken(userDetails.userId, refreshToken)
 
         return AuthToken(accessToken, refreshToken)
     }
 
     fun logout(command: UserLogoutCommand) {
         // accessToken 블랙리스트 등록
-        redisAuthTokenRepository.saveBlacklistToken(command.userId, command.accessToken)
+        command.accessToken?.let {
+            redisAuthTokenRepository.saveBlacklistToken(command.userId, it)
+        }
 
         // refreshToken 폐기
         redisAuthTokenRepository.deleteRefreshToken(command.userId)

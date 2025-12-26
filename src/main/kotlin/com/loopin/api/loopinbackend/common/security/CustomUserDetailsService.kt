@@ -15,6 +15,15 @@ class CustomUserDetailsService(
 ) : UserDetailsService {
     override fun loadUserByUsername(email: String): UserDetails {
         val user = userJpaRepository.findByEmail(email) ?: throw UsernameNotFoundException("User not found: $email")
-        return CustomUserDetails(user)
+
+        val userId = user.id
+            ?: throw IllegalStateException("Persisted user must have id")
+
+        return CustomUserDetails(
+            userId = userId,
+            email = user.email,
+            encodedPassword = user.getEncodedPassword(),
+            role = user.role
+        )
     }
 }

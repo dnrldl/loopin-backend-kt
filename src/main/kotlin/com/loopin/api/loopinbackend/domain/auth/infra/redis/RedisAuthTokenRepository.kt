@@ -37,9 +37,7 @@ class RedisAuthTokenRepository(
         redisTemplate.delete(redisKey)
     }
 
-    fun saveBlacklistToken(userId: Long, blacklistToken: String?) {
-        if (blacklistToken == null) return
-
+    fun saveBlacklistToken(userId: Long, blacklistToken: String) {
         val redisKey =
             RedisKeyGenerator.generateRedisKey(RedisPrefix.BLACKLIST, blacklistToken)
         val ttl = Duration.ofMillis(jwtProvider.extractExpiredTime(blacklistToken) - System.currentTimeMillis()).seconds
