@@ -44,7 +44,12 @@ class UserController(
     @Operation(summary = "유저 정보 조회")
     @GetMapping("/{id}")
     fun getUserInfo(@PathVariable id: Long): SuccessResponse<UserInfoView> =
-        SuccessResponse.of(userQueryService.getUserById(id).toInfoView(), SuccessCode.RETRIEVE_SUCCESS)
+        SuccessResponse.of(userQueryService.getUserInfo(id).toInfoView(), SuccessCode.RETRIEVE_SUCCESS)
+
+    @Operation(summary = "내 정보 조회")
+    @GetMapping("/me")
+    fun getMyInfo(@AuthUserId userId: Long): SuccessResponse<UserInfoView> =
+        SuccessResponse.of(userQueryService.getMyInfo(userId).toInfoView(), SuccessCode.RETRIEVE_SUCCESS)
 
     @Operation(summary = "이메일 유효성 조회")
     @GetMapping("/check/email")
@@ -88,8 +93,7 @@ class UserController(
     fun checkMyPassword(
         @AuthUserId userId: Long,
         @RequestBody body: CheckMyPasswordRequest): SuccessResponse<CheckMyPasswordResult> {
-        val command = CheckMyPasswordCommand(userId, body.password)
-        val result = CheckMyPasswordResult(userQueryService.checkMyPassword(command))
+        val result = CheckMyPasswordResult(userQueryService.checkMyPassword(userId, body.password))
 
         return SuccessResponse.of(result, SuccessCode.RETRIEVE_SUCCESS)
     }

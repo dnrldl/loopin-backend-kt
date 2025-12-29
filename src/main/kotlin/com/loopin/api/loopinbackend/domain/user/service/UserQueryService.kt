@@ -16,15 +16,17 @@ class UserQueryService(
     private val passwordEncoder: PasswordEncoder
 ) {
 
-    fun getUserById(userId: Long): User =
+    fun getUserInfo(userId: Long): User =
         userJpaRepository.findUserById(userId) ?: throw BaseException(ErrorCode.USER_NOT_FOUND)
+
+    fun getMyInfo(userId: Long): User = getUserInfo(userId)
 
     fun existsByEmail(email: String): Boolean = userJpaRepository.existsByEmail(email)
     fun existsByNickname(nickname: String): Boolean = userJpaRepository.existsByNickname(nickname)
     fun existsByPhoneNumber(phoneNumber: String): Boolean = userJpaRepository.existsByPhoneNumber(phoneNumber)
 
-    fun checkMyPassword(command: CheckMyPasswordCommand): Boolean {
-        val user = userJpaRepository.findUserById(command.userId) ?: throw BaseException(ErrorCode.USER_NOT_FOUND)
-        return passwordEncoder.matches(command.password, user.getEncodedPassword())
+    fun checkMyPassword(userId: Long, password: String): Boolean {
+        val user = userJpaRepository.findUserById(userId) ?: throw BaseException(ErrorCode.USER_NOT_FOUND)
+        return passwordEncoder.matches(password, user.getEncodedPassword())
     }
 }
