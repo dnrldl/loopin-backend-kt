@@ -5,7 +5,6 @@ import com.loopin.api.loopinbackend.common.response.ErrorResponse
 import com.loopin.api.loopinbackend.common.response.code.ErrorCode
 import jakarta.servlet.http.HttpServletRequest
 import org.slf4j.LoggerFactory
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.HttpRequestMethodNotSupportedException
 import org.springframework.web.bind.MethodArgumentNotValidException

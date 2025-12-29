@@ -12,4 +12,6 @@ object ValidationPattern {
     const val NICKNAME_MIN_LENGTH: Int = 2
     const val NICKNAME_MAX_LENGTH: Int = 12
     const val BIO_MAX_LENGTH: Int = 100
+    const val FIRST_NAME_MAX_LENGTH: Int = 10
+    const val LAST_NAME_MAX_LENGTH: Int = 10
 }

@@ -1,6 +1,5 @@
 package com.loopin.api.loopinbackend.common.security.util
 
-import com.loopin.api.loopinbackend.domain.user.entity.User
 import com.loopin.api.loopinbackend.common.security.CustomUserDetails
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.security.core.Authentication

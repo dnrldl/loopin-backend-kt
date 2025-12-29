@@ -3,11 +3,11 @@ package com.loopin.api.loopinbackend.domain.post.controller
 import com.loopin.api.loopinbackend.common.annotation.AuthUserId
 import com.loopin.api.loopinbackend.common.response.SuccessResponse
 import com.loopin.api.loopinbackend.common.response.code.SuccessCode
-import com.loopin.api.loopinbackend.domain.post.dto.req.CreatePostRequest
-import com.loopin.api.loopinbackend.domain.post.command.dto.CreatePostResult
-import com.loopin.api.loopinbackend.domain.post.command.service.PostCommandService
-import com.loopin.api.loopinbackend.domain.post.query.dto.PostDetailView
-import com.loopin.api.loopinbackend.domain.post.query.service.PostQueryService
+import com.loopin.api.loopinbackend.domain.post.web.req.CreatePostRequest
+import com.loopin.api.loopinbackend.domain.post.command.CreatePostResult
+import com.loopin.api.loopinbackend.domain.post.service.PostCommandService
+import com.loopin.api.loopinbackend.domain.post.query.PostDetailView
+import com.loopin.api.loopinbackend.domain.post.service.PostQueryService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
