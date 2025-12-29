@@ -27,8 +27,8 @@ class PostController(
 ) {
     @Operation(summary = "게시글 등록")
     @PostMapping("/create")
-    fun createPost(@AuthUserId userId: Long, @RequestBody @Valid request: CreatePostRequest): SuccessResponse<CreatePostResult> =
-        SuccessResponse.of(postCommandService.createPost(request, userId), SuccessCode.SAVE_SUCCESS)
+    fun createPost(@AuthUserId userId: Long, @RequestBody @Valid body: CreatePostRequest): SuccessResponse<CreatePostResult> =
+        SuccessResponse.of(postCommandService.createPost(body, userId), SuccessCode.SAVE_SUCCESS)
 
     @Operation(summary = "게시글 상세 조회")
     @GetMapping("/{postId}")

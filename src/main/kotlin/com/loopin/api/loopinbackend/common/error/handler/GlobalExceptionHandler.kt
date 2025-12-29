@@ -4,6 +4,7 @@ import com.loopin.api.loopinbackend.common.error.exception.BaseException
 import com.loopin.api.loopinbackend.common.response.ErrorResponse
 import com.loopin.api.loopinbackend.common.response.code.ErrorCode
 import jakarta.servlet.http.HttpServletRequest
+import jakarta.validation.ConstraintViolationException
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
 import org.springframework.web.HttpRequestMethodNotSupportedException
@@ -42,6 +43,19 @@ class GlobalExceptionHandler {
         return ResponseEntity
             .status(errorCode.status)
             .body(ErrorResponse.fail(code = errorCode))
+    }
+
+    // 사용자 요청 예외 (Validation)
+    @ExceptionHandler(ConstraintViolationException::class)
+    fun handleConstraintViolation(e: ConstraintViolationException, request: HttpServletRequest): ResponseEntity<ErrorResponse> {
+        val errorCode = ErrorCode.INVALID_INPUT_VALUE
+        printErrorLog(errorCode, request, e)
+
+        val body = ErrorResponse.fail(code = errorCode).apply {
+            message = e.message ?: message
+        }
+
+        return ResponseEntity.status(errorCode.status).body(body)
     }
 
     // 사용자 요청 예외 (Validation)

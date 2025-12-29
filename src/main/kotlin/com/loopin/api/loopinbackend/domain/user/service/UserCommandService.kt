@@ -61,7 +61,7 @@ class UserCommandService(
         command.nickname
             ?.takeIf { it != user.getNickname() }
             ?.let { newNickname ->
-            if (existsByNickname(newNickname)) throw BusinessException(ErrorCode.DUPLICATED_NICKNAME)
+            if (userJpaRepository.existsByNickname(newNickname)) throw BusinessException(ErrorCode.DUPLICATED_NICKNAME)
             user.setNickname(newNickname)
         }
 
@@ -75,17 +75,12 @@ class UserCommandService(
         userJpaRepository.delete(user)
     }
 
-    fun existsByEmail(email: String): Boolean = userJpaRepository.existsByEmail(email)
-    fun existsByNickname(nickname: String): Boolean = userJpaRepository.existsByNickname(nickname)
-    fun existsByPhoneNumber(phoneNumber: String): Boolean = userJpaRepository.existsByPhoneNumber(phoneNumber)
-
-
     private fun validateRegister(request: RegisterUserRequest) {
         val fields = mutableListOf<String>()
 
-        if (existsByEmail(request.email)) fields.add("email")
-        if (existsByNickname(request.nickname)) fields.add("nickname")
-        if (existsByPhoneNumber(request.phoneNumber)) fields.add("phoneNumber")
+        if (userJpaRepository.existsByEmail(request.email)) fields.add("email")
+        if (userJpaRepository.existsByNickname(request.nickname)) fields.add("nickname")
+        if (userJpaRepository.existsByPhoneNumber(request.phoneNumber)) fields.add("phoneNumber")
 
         if (!fields.isEmpty()) throw BusinessException(ErrorCode.USED_USER_INFORMATION, fields = fields)
     }

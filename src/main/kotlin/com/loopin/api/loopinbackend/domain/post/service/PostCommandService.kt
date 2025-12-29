@@ -13,9 +13,9 @@ class PostCommandService(
     private val postJpaRepository: PostJpaRepository,
 ) {
     fun createPost(command: CreatePostRequest, userId: Long): CreatePostResult {
-        val post = Post.Companion.create(command.content, userId)
+        val post = Post.create(command.content, userId)
         val savedPost = postJpaRepository.save(post)
 
-        return CreatePostResult(postId = savedPost.id!!)
+        return CreatePostResult(postId = checkNotNull(savedPost.id))
     }
 }

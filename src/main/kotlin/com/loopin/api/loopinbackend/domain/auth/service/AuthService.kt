@@ -7,7 +7,7 @@ import com.loopin.api.loopinbackend.common.security.jwt.JwtProvider
 import com.loopin.api.loopinbackend.domain.auth.command.UserLoginCommand
 import com.loopin.api.loopinbackend.domain.auth.command.UserLogoutCommand
 import com.loopin.api.loopinbackend.domain.auth.command.UserRefreshTokenCommand
-import com.loopin.api.loopinbackend.domain.auth.dto.AuthToken
+import com.loopin.api.loopinbackend.domain.auth.command.UserLoginResult
 import com.loopin.api.loopinbackend.domain.auth.command.UserRefreshTokenResult
 import com.loopin.api.loopinbackend.domain.auth.infra.redis.RedisAuthTokenRepository
 import com.loopin.api.loopinbackend.domain.user.type.Role
@@ -22,7 +22,7 @@ class AuthService(
     private val jwtProvider: JwtProvider
 ) {
 
-    fun login(command: UserLoginCommand): AuthToken {
+    fun login(command: UserLoginCommand): UserLoginResult {
         val auth = authenticationManager.authenticate(
             UsernamePasswordAuthenticationToken(
                 command.email,
@@ -37,7 +37,7 @@ class AuthService(
         // 리프레시 토큰 저장 (Redis)
         redisAuthTokenRepository.saveRefreshToken(userDetails.userId, refreshToken)
 
-        return AuthToken(accessToken, refreshToken)
+        return UserLoginResult(accessToken, refreshToken)
     }
 
     fun logout(command: UserLogoutCommand) {
@@ -51,14 +51,17 @@ class AuthService(
     }
 
     fun refreshToken(command: UserRefreshTokenCommand): UserRefreshTokenResult {
+        val refreshToken = command.refreshToken
+            .takeIf { it.isNotBlank() } ?: throw BusinessException(ErrorCode.INVALID_REFRESH_TOKEN)
+
         // refreshToken에서 사용자 정보 추출
-        val userId = jwtProvider.extractUserId(command.refreshToken)
-        val email = jwtProvider.extractUsername(command.refreshToken)
+        val userId = jwtProvider.extractUserId(refreshToken)
+        val email = jwtProvider.extractUsername(refreshToken)
 
         // 레디스에 저장된 refreshToken 추출
         val savedRefreshToken = redisAuthTokenRepository.findRefreshToken(userId)
 
-        if (savedRefreshToken != command.refreshToken) throw BusinessException(ErrorCode.INVALID_REFRESH_TOKEN)
+        if (savedRefreshToken != refreshToken) throw BusinessException(ErrorCode.INVALID_REFRESH_TOKEN)
 
         // 새 토큰 발급
         val newAccessToken = jwtProvider.generateAccessToken(userId, email, Role.USER)

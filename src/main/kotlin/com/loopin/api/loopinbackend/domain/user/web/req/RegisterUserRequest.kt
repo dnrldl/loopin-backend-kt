@@ -40,7 +40,7 @@ data class RegisterUserRequest(
     )
     val nickname: String,
 
-    @field:NotBlank(message = "전화번호는 필수 입력값입니다.")
+    @field:NotBlank(message = ValidationMessage.PHONE_NUMBER_NOT_BLANK)
     @field:Pattern(
         regexp = ValidationPattern.PHONE_NUMBER_VALID,
         message = ValidationMessage.PHONE_NUMBER_PATTERN
