@@ -31,25 +31,40 @@ class JwtAuthenticationFilter(
         response: HttpServletResponse,
         filterChain: FilterChain
     ) {
-        val token = resolveToken(request)
-        val tokenStatus = jwtProvider.getTokenStatus(token)
+        try {
+            val token = resolveToken(request)
+            val tokenStatus = jwtProvider.getTokenStatus(token)
 
-        log.debug("요청된 토큰 = {}", token)
-        log.debug("요청된 토큰 상태 = {}", tokenStatus)
+            log.debug("요청된 토큰 = {}", token)
+            log.debug("요청된 토큰 상태 = {}", tokenStatus)
 
-        if (tokenStatus != TokenStatus.EMPTY) {
-            if (tokenStatus != TokenStatus.VALID) throw CommonAuthenticationException("유효하지 않은 토큰입니다. tokenStatus = $tokenStatus")
-            if (redisAuthTokenRepository.hasBlacklistToken(token!!)) throw CommonAuthenticationException("로그아웃된 토큰입니다.")
+            if (tokenStatus != TokenStatus.EMPTY) {
+                if (tokenStatus != TokenStatus.VALID)
+                    throw CommonAuthenticationException("유효하지 않은 토큰입니다.")
 
-            val email = jwtProvider.extractUsername(token)
-            val userDetails = customUserDetailsService.loadUserByUsername(email) as CustomUserDetails
+                if (redisAuthTokenRepository.hasBlacklistToken(token!!))
+                    throw CommonAuthenticationException("로그아웃된 토큰입니다.")
 
-            val auth = UsernamePasswordAuthenticationToken(userDetails, null, userDetails.authorities)
-            auth.details = WebAuthenticationDetailsSource().buildDetails(request) // 세션, IP 등등
+                val email = jwtProvider.extractUsername(token)
+                val userDetails =
+                    customUserDetailsService.loadUserByUsername(email) as CustomUserDetails
 
-            SecurityContextHolder.getContext().authentication = auth
+                val auth = UsernamePasswordAuthenticationToken(
+                    userDetails,
+                    null,
+                    userDetails.authorities
+                )
+
+                auth.details = WebAuthenticationDetailsSource().buildDetails(request)
+                SecurityContextHolder.getContext().authentication = auth
+            }
+
+            filterChain.doFilter(request, response)
+
+        } catch (e: CommonAuthenticationException) {
+            request.setAttribute("AUTH_EXCEPTION_MESSAGE", e.message)
+            throw e
         }
-
-        filterChain.doFilter(request, response)
     }
+
 }

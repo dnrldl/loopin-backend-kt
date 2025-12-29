@@ -27,7 +27,7 @@ class CustomAuthenticationEntryPoint(
 
         val errorCode = ErrorCode.UNAUTHORIZED
         val errorResponse = ErrorResponse.fail(errorCode).apply {
-            message = authException.message ?: errorCode.message
+            message = request.getAttribute("AUTH_EXCEPTION_MESSAGE") as? String ?: errorCode.message
         }
 
         response.status = errorCode.status.value()

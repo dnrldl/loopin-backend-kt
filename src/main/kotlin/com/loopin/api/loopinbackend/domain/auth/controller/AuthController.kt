@@ -10,18 +10,13 @@ import com.loopin.api.loopinbackend.domain.auth.command.service.AuthService
 import com.loopin.api.loopinbackend.domain.auth.dto.req.UserLoginRequest
 import com.loopin.api.loopinbackend.domain.auth.dto.res.UserLoginResponse
 import com.loopin.api.loopinbackend.domain.auth.dto.res.UserRefreshTokenResponse
-import com.loopin.api.loopinbackend.domain.auth.dto.res.UserRefreshTokenResult
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseCookie
-import org.springframework.web.bind.annotation.CookieValue
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import java.time.Duration
 
 @Tag(name = "Auth", description = "인증 API")

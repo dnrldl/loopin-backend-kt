@@ -41,7 +41,7 @@ class AuthService(
     }
 
     fun logout(command: UserLogoutCommand) {
-        // accessToken 블랙리스트 등록
+        // accessToken 있으면 블랙리스트 등록
         command.accessToken?.let {
             redisAuthTokenRepository.saveBlacklistToken(command.userId, it)
         }
@@ -58,12 +58,13 @@ class AuthService(
         // 레디스에 저장된 refreshToken 추출
         val savedRefreshToken = redisAuthTokenRepository.findRefreshToken(userId)
 
-        // 요청, 저장된 리프레시가 다르거나 없다면 예외
         if (savedRefreshToken != command.refreshToken) throw BusinessException(ErrorCode.INVALID_REFRESH_TOKEN)
 
+        // 새 토큰 발급
         val newAccessToken = jwtProvider.generateAccessToken(userId, email, Role.USER)
         val newRefreshToken = jwtProvider.generateRefreshToken(userId, email, Role.USER)
 
+        // 기존 refreshToken 삭제, 새로운 토큰 등록
         redisAuthTokenRepository.deleteRefreshToken(userId)
         redisAuthTokenRepository.saveRefreshToken(userId, newRefreshToken)
         return UserRefreshTokenResult(accessToken = newAccessToken, refreshToken = newRefreshToken)

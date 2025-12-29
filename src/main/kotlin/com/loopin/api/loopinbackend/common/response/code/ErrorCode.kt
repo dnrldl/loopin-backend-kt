@@ -44,7 +44,7 @@ enum class ErrorCode(
     JWT_VALIDATION_ERROR("F-JT003", "JWT 검증 중 예기치 못한 오류가 발생했습니다.", HttpStatus.UNAUTHORIZED),
     EMPTY_JWT("F-JT004", "토큰이 비어있습니다.", HttpStatus.UNAUTHORIZED),
     BLACKLISTED_TOKEN("F-JT005", "로그아웃된 토큰입니다.", HttpStatus.UNAUTHORIZED),
-    INVALID_REFRESH_TOKEN("F-JT006", "유효하지 않은 refresh 토큰입니다.", HttpStatus.BAD_REQUEST),
+    INVALID_REFRESH_TOKEN("F-JT006", "refresh 토큰이 없거나 유효하지 않습니다.", HttpStatus.BAD_REQUEST),
 
     // api request
     EXTERNAL_API_ERROR("E-E001", "외부 시스템 오류가 발생했습니다. 잠시 후 다시 시도해주세요.", HttpStatus.BAD_GATEWAY),
