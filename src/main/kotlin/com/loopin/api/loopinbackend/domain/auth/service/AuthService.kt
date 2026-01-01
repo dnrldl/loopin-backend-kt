@@ -4,15 +4,12 @@ import com.loopin.api.loopinbackend.common.error.exception.BusinessException
 import com.loopin.api.loopinbackend.common.response.code.ErrorCode
 import com.loopin.api.loopinbackend.common.security.CustomUserDetails
 import com.loopin.api.loopinbackend.common.security.jwt.JwtProvider
-import com.loopin.api.loopinbackend.domain.auth.command.UserLoginCommand
-import com.loopin.api.loopinbackend.domain.auth.command.UserLogoutCommand
-import com.loopin.api.loopinbackend.domain.auth.command.UserRefreshTokenCommand
-import com.loopin.api.loopinbackend.domain.auth.command.UserLoginResult
-import com.loopin.api.loopinbackend.domain.auth.command.UserRefreshTokenResult
+import com.loopin.api.loopinbackend.domain.auth.command.*
 import com.loopin.api.loopinbackend.domain.auth.infra.redis.RedisAuthTokenRepository
 import com.loopin.api.loopinbackend.domain.user.type.Role
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.AuthenticationException
 import org.springframework.stereotype.Service
 
 @Service
@@ -23,21 +20,25 @@ class AuthService(
 ) {
 
     fun login(command: UserLoginCommand): UserLoginResult {
-        val auth = authenticationManager.authenticate(
-            UsernamePasswordAuthenticationToken(
-                command.email,
-                command.password
+        try {
+            val auth = authenticationManager.authenticate(
+                UsernamePasswordAuthenticationToken(
+                    command.email,
+                    command.password
+                )
             )
-        )
-        val userDetails = auth.principal as CustomUserDetails
+            val userDetails = auth.principal as CustomUserDetails
 
-        val accessToken = jwtProvider.generateAccessToken(userDetails.userId, userDetails.username, Role.USER)
-        val refreshToken = jwtProvider.generateRefreshToken(userDetails.userId, userDetails.username, Role.USER)
+            val accessToken = jwtProvider.generateAccessToken(userDetails.userId, userDetails.username, Role.USER)
+            val refreshToken = jwtProvider.generateRefreshToken(userDetails.userId, userDetails.username, Role.USER)
 
-        // 리프레시 토큰 저장 (Redis)
-        redisAuthTokenRepository.saveRefreshToken(userDetails.userId, refreshToken)
+            // 리프레시 토큰 저장 (Redis)
+            redisAuthTokenRepository.saveRefreshToken(userDetails.userId, refreshToken)
 
-        return UserLoginResult(accessToken, refreshToken)
+            return UserLoginResult(accessToken, refreshToken)
+        } catch (e: AuthenticationException) {
+            throw BusinessException(ErrorCode.INVALID_LOGIN)
+        }
     }
 
     fun logout(command: UserLogoutCommand) {

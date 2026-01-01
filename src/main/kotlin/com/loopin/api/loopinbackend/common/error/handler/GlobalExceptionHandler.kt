@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest
 import jakarta.validation.ConstraintViolationException
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
+import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.web.HttpRequestMethodNotSupportedException
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -29,6 +30,15 @@ class GlobalExceptionHandler {
             .body(ErrorResponse.fail(code = errorCode))
     }
 
+    @ExceptionHandler(HttpMessageNotReadableException::class)
+    fun handleNotReadable(e: HttpMessageNotReadableException, request: HttpServletRequest): ResponseEntity<ErrorResponse> {
+        val errorCode = ErrorCode.EMPTY_INPUT_VALUE
+        printErrorLog(errorCode, request, e)
+
+        return ResponseEntity
+            .status(errorCode.status)
+            .body(ErrorResponse.fail(code = errorCode))
+    }
 
     // 잘못된 메서드로 요청 예) GET 으로 요청해야하는데 POST 로 요청
     @ExceptionHandler(HttpRequestMethodNotSupportedException::class)
