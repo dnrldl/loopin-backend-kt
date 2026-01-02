@@ -7,7 +7,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
 @Configuration
 class WebConfig(
-    private val resolver: AuthUserIdArgumentResolver
+    private val resolver: AuthPrincipalArgumentResolver
 ) : WebMvcConfigurer {
 
     override fun addCorsMappings(registry: CorsRegistry) {

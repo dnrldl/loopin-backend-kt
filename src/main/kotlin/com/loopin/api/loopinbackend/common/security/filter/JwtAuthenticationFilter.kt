@@ -55,6 +55,8 @@ class JwtAuthenticationFilter(
                     userDetails.authorities
                 )
 
+                auth.principal is CustomUserDetails
+
                 auth.details = WebAuthenticationDetailsSource().buildDetails(request)
                 SecurityContextHolder.getContext().authentication = auth
             }

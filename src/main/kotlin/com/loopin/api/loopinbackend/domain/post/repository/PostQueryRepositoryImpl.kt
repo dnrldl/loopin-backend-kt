@@ -1,10 +1,10 @@
 package com.loopin.api.loopinbackend.domain.post.repository
 
 import com.loopin.api.loopinbackend.domain.post.entity.QPost
-import com.loopin.api.loopinbackend.domain.post.query.PostDetailView
+import com.loopin.api.loopinbackend.domain.post.repository.row.PostDetailRow
+import com.loopin.api.loopinbackend.domain.post.repository.row.QPostDetailRow
 import com.querydsl.core.types.Projections
 import com.querydsl.jpa.impl.JPAQueryFactory
-import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
 
 @Repository
@@ -13,13 +13,16 @@ class PostQueryRepositoryImpl(
 ) : PostQueryRepository {
     private val post = QPost.post
 
-    override fun findPostDetail(postId: Long, userId: Long?): PostDetailView? {
+    override fun findPostDetail(postId: Long, userId: Long?): PostDetailRow? {
+        // TODO: 게시글 좋아요
         return queryFactory
             .select(
-                Projections.constructor(
-                    PostDetailView::class.java,
+                QPostDetailRow(
                     post.id,
+                    post.createdBy,
                     post.content,
+                    post.createdAt,
+                    post.updatedAt
                 )
             )
             .from(post)

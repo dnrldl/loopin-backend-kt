@@ -1,5 +1,7 @@
 package com.loopin.api.loopinbackend.domain.post.controller
 
+import com.loopin.api.loopinbackend.common.annotation.AuthRequirement
+import com.loopin.api.loopinbackend.common.annotation.AuthUserEmail
 import com.loopin.api.loopinbackend.common.annotation.AuthUserId
 import com.loopin.api.loopinbackend.common.response.SuccessResponse
 import com.loopin.api.loopinbackend.common.response.code.SuccessCode
@@ -27,6 +29,6 @@ class PostController(
 
     @Operation(summary = "게시글 상세 조회")
     @GetMapping("/{postId}")
-    fun createPost(@AuthUserId userId: Long?, @PathVariable postId: Long): SuccessResponse<PostDetailView> =
+    fun getPostDetail(@AuthUserId userId: Long, @PathVariable postId: Long): SuccessResponse<PostDetailView> =
         SuccessResponse.of(postQueryService.getPostDetail(postId, userId), SuccessCode.RETRIEVE_SUCCESS)
 }
