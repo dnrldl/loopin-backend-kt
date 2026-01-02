@@ -1,6 +1,6 @@
-package com.loopin.api.loopinbackend.domain.auth.infra.redis
+package com.loopin.api.loopinbackend.domain.auth.repository
 
-import com.loopin.api.loopinbackend.common.redis.constant.RedisPrefix
+import com.loopin.api.loopinbackend.common.redis.constant.RedisConstant
 import com.loopin.api.loopinbackend.common.redis.generator.RedisKeyGenerator
 import com.loopin.api.loopinbackend.common.security.jwt.JwtProvider
 import org.springframework.data.redis.core.RedisTemplate
@@ -16,7 +16,7 @@ class RedisAuthTokenRepository(
 
     fun saveRefreshToken(userId: Long, refreshToken: String) {
         val redisKey =
-            RedisKeyGenerator.generateRedisKey(RedisPrefix.REFRESH_TOKEN, userId)
+            RedisKeyGenerator.generateRedisKey(RedisConstant.REFRESH_TOKEN, userId)
         val ttl = Duration.ofMillis(jwtProvider.extractExpiredTime(refreshToken) - System.currentTimeMillis()).seconds
 
         redisTemplate.opsForValue()
@@ -25,21 +25,21 @@ class RedisAuthTokenRepository(
 
     fun findRefreshToken(userId: Long): String? {
         val redisKey =
-            RedisKeyGenerator.generateRedisKey(RedisPrefix.REFRESH_TOKEN, userId)
+            RedisKeyGenerator.generateRedisKey(RedisConstant.REFRESH_TOKEN, userId)
 
         return redisTemplate.opsForValue().get(redisKey)
     }
 
     fun deleteRefreshToken(userId: Long) {
         val redisKey =
-            RedisKeyGenerator.generateRedisKey(RedisPrefix.REFRESH_TOKEN, userId)
+            RedisKeyGenerator.generateRedisKey(RedisConstant.REFRESH_TOKEN, userId)
 
         redisTemplate.delete(redisKey)
     }
 
     fun saveBlacklistToken(userId: Long, blacklistToken: String) {
         val redisKey =
-            RedisKeyGenerator.generateRedisKey(RedisPrefix.BLACKLIST, blacklistToken)
+            RedisKeyGenerator.generateRedisKey(RedisConstant.BLACKLIST, blacklistToken)
         val ttl = Duration.ofMillis(jwtProvider.extractExpiredTime(blacklistToken) - System.currentTimeMillis()).seconds
 
         if (ttl > 0) {
@@ -49,5 +49,5 @@ class RedisAuthTokenRepository(
     }
 
     fun hasBlacklistToken(accessToken: String): Boolean =
-        redisTemplate.hasKey(RedisKeyGenerator.generateRedisKey(RedisPrefix.BLACKLIST, accessToken))
+        redisTemplate.hasKey(RedisKeyGenerator.generateRedisKey(RedisConstant.BLACKLIST, accessToken))
 }

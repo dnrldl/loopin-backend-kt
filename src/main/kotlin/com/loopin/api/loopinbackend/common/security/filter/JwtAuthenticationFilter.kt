@@ -6,7 +6,7 @@ import com.loopin.api.loopinbackend.common.security.CustomUserDetails
 import com.loopin.api.loopinbackend.common.security.CustomUserDetailsService
 import com.loopin.api.loopinbackend.common.security.jwt.JwtProvider
 import com.loopin.api.loopinbackend.common.security.util.resolveToken
-import com.loopin.api.loopinbackend.domain.auth.infra.redis.RedisAuthTokenRepository
+import com.loopin.api.loopinbackend.domain.auth.repository.RedisAuthTokenRepository
 import com.loopin.api.loopinbackend.domain.auth.type.TokenStatus
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest

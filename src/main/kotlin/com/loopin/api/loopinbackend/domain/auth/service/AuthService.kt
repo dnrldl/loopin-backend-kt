@@ -5,7 +5,7 @@ import com.loopin.api.loopinbackend.common.response.code.ErrorCode
 import com.loopin.api.loopinbackend.common.security.CustomUserDetails
 import com.loopin.api.loopinbackend.common.security.jwt.JwtProvider
 import com.loopin.api.loopinbackend.domain.auth.command.*
-import com.loopin.api.loopinbackend.domain.auth.infra.redis.RedisAuthTokenRepository
+import com.loopin.api.loopinbackend.domain.auth.repository.RedisAuthTokenRepository
 import com.loopin.api.loopinbackend.domain.user.type.Role
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken

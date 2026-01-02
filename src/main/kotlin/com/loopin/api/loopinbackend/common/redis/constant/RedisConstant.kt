@@ -1,8 +1,10 @@
 package com.loopin.api.loopinbackend.common.redis.constant
 
-enum class RedisPrefix(
+enum class RedisConstant(
     val value: String
 ) {
     REFRESH_TOKEN("auth:refresh"),
     BLACKLIST("auth:blacklist"),
+    POST("post"),
+    LIKE("like")
 }
