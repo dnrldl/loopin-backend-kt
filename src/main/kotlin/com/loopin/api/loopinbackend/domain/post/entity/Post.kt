@@ -14,5 +14,5 @@ class Post(
     val content: String? = null,
 
     @Column(nullable = false)
-    val likeCount: Int = 0
+    val likeCount: Long = 0
 ) : BaseEntity()

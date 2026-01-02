@@ -7,6 +7,7 @@ class PostDetailView(
     val authorId: Long,
     val content: String,
     val image: List<Image>,
+    val likeCount: Long,
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime
 ) {

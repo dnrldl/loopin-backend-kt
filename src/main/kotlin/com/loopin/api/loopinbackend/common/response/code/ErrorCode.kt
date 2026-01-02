@@ -23,11 +23,13 @@ enum class ErrorCode(
     PASSWORD_SAME_AS_OLD("F-US007", "새 비밀번호는 기존 비밀번호와 같을 수 없습니다.", HttpStatus.BAD_REQUEST),
     DUPLICATED_PHONE_NUMBER("F-US008", "이미 사용 중인 전화번호입니다.", HttpStatus.CONFLICT),
     USED_USER_INFORMATION("F-US008", "이미 사용 중인 사용자 정보입니다.", HttpStatus.CONFLICT),
-    EMPTY_INPUT_VALUE("F-US009", "요청값이 비었습니다.", HttpStatus.BAD_REQUEST),
+    NO_READABLE_BODY("F-US009", "요청 body를 읽을 수 없습니다.", HttpStatus.BAD_REQUEST),
 
     // post
     POST_NOT_FOUND("F-PO001", "게시글을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
     POST_NOT_OWNER("F-PO002", "게시글의 작성자가 아닙니다.", HttpStatus.FORBIDDEN),
+    ALREADY_LIKED_POST("F-PO003", "좋아요한 게시글입니다.", HttpStatus.CONFLICT),
+    ALREADY_UNLIKED_POST("F-PO004", "좋아요 하지 않은 게시글입니다.", HttpStatus.CONFLICT),
 
     // post_like
     POST_LIKE_NOT_FOUND("F-PO003", "현재 유저의 해당 게시글 좋아요 기록을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),

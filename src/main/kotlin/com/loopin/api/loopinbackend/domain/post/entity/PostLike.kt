@@ -6,9 +6,18 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Table
+import jakarta.persistence.UniqueConstraint
 
 @Entity
-@Table(name = "post_likes")
+@Table(
+    name = "post_likes",
+    uniqueConstraints = [
+        UniqueConstraint(
+            name = "uk_post_like_post_user",
+            columnNames = ["post_id", "user_id"]
+        )
+    ]
+)
 class PostLike(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,

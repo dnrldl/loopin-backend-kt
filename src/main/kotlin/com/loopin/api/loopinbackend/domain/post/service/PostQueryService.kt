@@ -5,6 +5,7 @@ import com.loopin.api.loopinbackend.common.response.code.ErrorCode
 import com.loopin.api.loopinbackend.domain.media.repository.MediaQueryRepository
 import com.loopin.api.loopinbackend.domain.post.query.PostDetailView
 import com.loopin.api.loopinbackend.domain.post.repository.PostQueryRepository
+import com.loopin.api.loopinbackend.domain.post.repository.RedisPostLikeRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -12,7 +13,8 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional(readOnly = true)
 class PostQueryService(
     private val postQueryRepository: PostQueryRepository,
-    private val mediaQueryRepository: MediaQueryRepository
+    private val mediaQueryRepository: MediaQueryRepository,
+    private val redisPostLikeRepository: RedisPostLikeRepository
 ) {
     fun getPostDetail(postId: Long, userId: Long?): PostDetailView {
         val post = postQueryRepository.findPostDetail(postId, userId) ?: throw BusinessException(ErrorCode.POST_NOT_FOUND)
@@ -24,12 +26,14 @@ class PostQueryService(
                     orderSeq = it.sortOrder
                 )
             }
+        val likeCount = redisPostLikeRepository.findPostLikeCount(post.id)
 
         return PostDetailView(
             postId = post.id,
             authorId = post.createdBy,
             content = post.content ?: "",
             image = image,
+            likeCount = likeCount,
             createdAt = post.createdAt,
             updatedAt = post.updatedAt
         )

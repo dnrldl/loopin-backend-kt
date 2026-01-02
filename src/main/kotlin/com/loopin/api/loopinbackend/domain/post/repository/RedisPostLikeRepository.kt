@@ -12,15 +12,22 @@ class RedisPostLikeRepository(
 
     fun findPostLikeCount(postId: Long): Long {
         val redisKey =
-            RedisKeyGenerator.generateRedisKey(RedisConstant.POST, postId, RedisConstant.LIKE)
+            RedisKeyGenerator.generateRedisKey(RedisConstant.POST, postId, RedisConstant.LIKE_COUNT)
 
-        return redisTemplate.opsForSet().size(redisKey)
+        return redisTemplate.opsForValue().get(redisKey)?.toLong() ?: 0L
     }
 
-    fun saveLikePost(userId: Long, postId: Long) {
+    fun increment(postId: Long) {
         val redisKey =
-            RedisKeyGenerator.generateRedisKey(RedisConstant.POST, postId, RedisConstant.LIKE)
+            RedisKeyGenerator.generateRedisKey(RedisConstant.POST, postId, RedisConstant.LIKE_COUNT)
 
-        redisTemplate.opsForSet().add(redisKey, userId.toString())
+        redisTemplate.opsForValue().increment(redisKey)
+    }
+
+    fun decrement(postId: Long) {
+        val redisKey =
+            RedisKeyGenerator.generateRedisKey(RedisConstant.POST, postId, RedisConstant.LIKE_COUNT)
+
+        redisTemplate.opsForValue().decrement(redisKey)
     }
 }

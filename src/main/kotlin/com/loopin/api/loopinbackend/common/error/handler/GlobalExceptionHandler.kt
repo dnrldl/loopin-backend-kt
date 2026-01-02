@@ -30,9 +30,10 @@ class GlobalExceptionHandler {
             .body(ErrorResponse.fail(code = errorCode))
     }
 
+    // 요청 body 오류
     @ExceptionHandler(HttpMessageNotReadableException::class)
     fun handleNotReadable(e: HttpMessageNotReadableException, request: HttpServletRequest): ResponseEntity<ErrorResponse> {
-        val errorCode = ErrorCode.EMPTY_INPUT_VALUE
+        val errorCode = ErrorCode.NO_READABLE_BODY
         printErrorLog(errorCode, request, e)
 
         return ResponseEntity

@@ -6,5 +6,6 @@ enum class RedisConstant(
     REFRESH_TOKEN("auth:refresh"),
     BLACKLIST("auth:blacklist"),
     POST("post"),
-    LIKE("like")
+    LIKE("like"),
+    LIKE_COUNT("like:count")
 }
