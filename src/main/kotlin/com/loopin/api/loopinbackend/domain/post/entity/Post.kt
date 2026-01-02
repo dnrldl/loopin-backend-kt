@@ -14,16 +14,5 @@ class Post(
     val content: String? = null,
 
     @Column(nullable = false)
-    val userId: Long,
-
-    @Column(nullable = false)
     val likeCount: Int = 0
-) : BaseEntity() {
-    companion object {
-        fun create(content: String?, userId: Long): Post =
-            Post(
-                content = content,
-                userId = userId
-            )
-    }
-}
+) : BaseEntity()

@@ -12,8 +12,8 @@ import org.springframework.transaction.annotation.Transactional
 class PostCommandService(
     private val postJpaRepository: PostJpaRepository,
 ) {
-    fun createPost(command: CreatePostRequest, userId: Long): CreatePostResult {
-        val post = Post.create(command.content, userId)
+    fun createPost(command: CreatePostRequest): CreatePostResult {
+        val post = Post(content = command.content)
         val savedPost = postJpaRepository.save(post)
 
         return CreatePostResult(postId = checkNotNull(savedPost.id))

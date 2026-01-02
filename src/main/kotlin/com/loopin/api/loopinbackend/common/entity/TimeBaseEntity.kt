@@ -17,11 +17,9 @@ abstract class TimeBaseEntity {
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
-    lateinit var createdAt: LocalDateTime
-        protected set
+    var createdAt: LocalDateTime? = null
 
     @LastModifiedDate
     @Column(nullable = false)
-    lateinit var updatedAt: LocalDateTime
-        protected set
+    var updatedAt: LocalDateTime? = null
 }
